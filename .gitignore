@@ -1,0 +1,7 @@
+result/*.json
+*.zip
+html/*.html
+html/pages/*
+result.json
+s3-to-es/*
+!s3-to-es/sample.py
