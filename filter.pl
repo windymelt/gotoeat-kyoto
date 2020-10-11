@@ -26,6 +26,7 @@ my $nodeset = $xml->find('/html/body/div[1]/form/main/div/div[2]/div/section/div
 foreach my $nd ($nodeset->get_nodelist()) {
     my $hash = {};
     $hash->{name} = $xml->find('h3', $nd)->string_value();
+    print(sprintf "processing %s\n", encode_utf8($hash->{name}));
     $hash->{category} = $xml->find('p[1]', $nd)->string_value();
     $hash->{address} = $xml->find('table/tbody/tr[1]/td', $nd)->string_value();
     $hash->{tel} = $xml->find('table/tbody/tr[2]/td', $nd)->string_value();
@@ -36,9 +37,11 @@ foreach my $nd ($nodeset->get_nodelist()) {
 
     if ($uri ne '-' && $uri ne '') {
         my $description;
-        if (! -e "html/pages/" . sha1_hex($uri)) {
-            my $cmd0 = sprintf("curl --silent -o html/pages/%s %s", sha1_hex($uri), $uri);
-            system $cmd0;
+        if (! -e "html/pages/" . sha1_hex(encode_utf8 $uri)) {
+            print(sprintf("downloading description from %s\n", encode_utf8($uri)));
+            my $cmd0 = sprintf("curl --silent --max-time 1 -o html/pages/%s %s", sha1_hex($uri), $uri);
+            my $code = system $cmd0;
+            warn "curl failed" if $code;
         }
         my $cmd = sprintf("cat html/pages/%s | grep -e 'description'", sha1_hex($uri));
         $description = `$cmd`;

@@ -1,0 +1,53 @@
+<html>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- THANKS FOR https://kishiken.com/jq/googlemap-5/ -->
+    <div id="map"></div>
+    <script>
+        var map;
+        var service;
+        function initMap() {
+          //マップを生成
+          map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: new google.maps.LatLng(35.0099964, 135.7574204),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          });
+          service = new google.maps.places.PlacesService(map);
+        }
+        //マーカーをクリックしたときに、吹き出しを出す。
+        function attachMessage(marker, msg) {
+          google.maps.event.addListener(marker, 'click', function(event) {
+            new google.maps.InfoWindow({
+              content: msg
+            }).open(marker.getMap(), marker);
+          });
+        }
+       
+       axios.get('./combined.json').then(function (resp) {
+        //マップにマーカーを生成
+        for (var i = 0; i < resp.length; i++) {
+            var request = {
+                query: resp[i].address,
+                fields: ['name', 'geometry'],
+            };
+            service.findPlaceFromQuery(request, function(results, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    for (var i = 0; i < results.length; i++) {
+                        createMarker(results[i]);
+                    }
+                }
+            });
+          } 
+       });
+
+
+      </script> 
+      <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKoqSmn1afNHd0L8Z0ntH0AkrD-RrTObg&callback=initMap">
+      </script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "kuromoji_normalize": {                 
+                    "char_filter": [
+                      "icu_normalizer"                    
+                    ],
+                    "tokenizer": "kuromoji_tokenizer",
+                    "filter": [
+                      "kuromoji_baseform",
+                      "kuromoji_part_of_speech",
+                      "cjk_width",
+                      "ja_stop",
+                      "kuromoji_stemmer",
+                      "lowercase"
+                    ]
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "name": {
+                "type": "text"
+            },
+            "category": {
+                "type": "keyword"
+            },
+            "address": {
+                "type": "text"
+            },
+            "tel": {
+                "type": "keyword"
+            },
+            "uri": {
+                "type": "text"
+            },
+            "description": {
+                "type": "text"
+            },
+            "geo": {
+                "type": "geo_point"
+            }
+        }
+    }
+}
